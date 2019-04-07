@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+        <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+                "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.findjob.mapper.ResumeMapper">
+
+    <resultMap id="baseInfoResultMap" type="Resume">
+    <id property="id" column="id" />
+    <result property="timeStamp" column="time_stamp" />
+    <result property="userId" column="user_id" />
+    <result property="identityNum" column="identity_num" />
+    <result property="name" column="name" />
+    <result property="sex" column="sex" />
+    <result property="nation" column="nation" />
+    <result property="marriage" column="marriage" />
+    <result property="workYear" column="work_year" />
+    <result property="address" column="address" />
+    <result property="evaluation" column="evaluation" />
+    <result property="birthday" column="birthday" />
+</resultMap>
+
+    <resultMap id="resumeResultMap" type="Resume">
+        <id property="id" column="id" />
+        <result property="timeStamp" column="time_stamp" />
+        <result property="userId" column="user_id" />
+        <result property="identityNum" column="identity_num" />
+        <result property="name" column="name" />
+        <result property="sex" column="sex" />
+        <result property="nation" column="nation" />
+        <result property="marriage" column="marriage" />
+        <result property="workYear" column="work_year" />
+        <result property="address" column="address" />
+        <result property="evaluation" column="evaluation" />
+        <result property="birthday" column="birthday" />
+        <collection property="educations" ofType="com.findjob.pojo.Education">
+            <id property="id" column="edId" />
+            <result property="timeStamp" column="edTs" />
+            <result property="resumeId" column="edResume_id" />
+            <result property="rowNum" column="edRowNum" />
+            <result property="beginDate" column="edBd" />
+            <result property="endDate" column="edEd" />
+            <result property="school" column="school" />
+            <result property="major" column="major" />
+            <result property="edu" column="edu" />
+            <result property="type" column="edType" />
+        </collection>
+        <collection property="experiences" ofType="com.findjob.pojo.Experience">
+            <id property="id" column="exId" />
+            <result property="timeStamp" column="ExTs" />
+            <result property="resumeId" column="exResume_id" />
+            <result property="rowNum" column="exRowNum" />
+            <result property="beginDate" column="exBd" />
+            <result property="endDate" column="exEd" />
+            <result property="company" column="company" />
+            <result property="post" column="post" />
+            <result property="description" column="description" />
+            <result property="type" column="exType" />
+        </collection>
+        <collection property="awards" ofType="com.findjob.pojo.Award">
+            <id property="id" column="aId" />
+            <result property="timeStamp" column="aTs" />
+            <result property="resumeId" column="aResume_id" />
+            <result property="rowNum" column="aRowNum" />
+            <result property="date" column="date" />
+            <result property="name" column="aName" />
+        </collection>
+    </resultMap>
+
+    <select id="findResumeByUserId" resultMap="resumeResultMap">
+        SELECT resume.*,
+               a.id AS aId, a.name As aName, a.date, a.resume_id AS aResume_id, a.rownum AS aRowNum, a.time_stamp AS aTs,
+               e.id AS edId, e.rownum AS edRowNum, e.time_stamp AS edTs, e.begin_date AS edBd, e.end_date AS edEd, e.type AS edType,
+               e.school, e.major, e.edu,  e.resume_id AS edResume_id,
+               e2.id AS exId, e2.rownum AS exRowNum, e2.time_stamp AS exTs, e2.resume_id AS exResume_id, e2.begin_date AS exBd,
+               e2.end_date AS exEd, e2.company, e2.post, e2.description, e2.type AS exType
+               FROM resume
+            LEFT JOIN award a on resume.id = a.resume_id
+            LEFT JOIN education e on resume.id = e.resume_id
+            LEFT JOIN experience e2 on resume.id = e2.resume_id
+        WHERE user_id = #{userId} ORDER BY a.rownum, e.rownum, e2.rownum
+    </select>
+
+    <select id="findResumeByResumeId" resultMap="resumeResultMap">
+        SELECT resume.*,
+               a.id AS aId, a.name As aName, a.date, a.resume_id AS aResume_id, a.rownum AS aRowNum, a.time_stamp AS aTs,
+               e.id AS edId, e.rownum AS edRowNum, e.time_stamp AS edTs, e.begin_date AS edBd, e.end_date AS edEd, e.type AS edType,
+               e.school, e.major, e.edu,  e.resume_id AS edResume_id,
+               e2.id AS exId, e2.rownum AS exRowNum, e2.time_stamp AS exTs, e2.resume_id AS exResume_id, e2.begin_date AS exBd,
+               e2.end_date AS exEd, e2.company, e2.post, e2.description, e2.type AS exType
+        FROM resume
+                 LEFT JOIN award a on resume.id = a.resume_id
+                 LEFT JOIN education e on resume.id = e.resume_id
+                 LEFT JOIN experience e2 on resume.id = e2.resume_id
+        WHERE resume.id = #{resumeId} ORDER BY a.rownum, e.rownum, e2.rownum
+    </select>
+
+    <select id="findBaseInfoByUserId" resultMap="baseInfoResultMap">
+        SELECT * FROM resume WHERE user_id = #{userId}
+    </select>
+
+    <insert id="insertResume" useGeneratedKeys="true" parameterType="com.findjob.pojo.Resume" keyProperty="id">
+        INSERT INTO resume(USER_ID, IDENTITY_NUM, NAME, SEX, NATION,
+                           MARRIAGE, WORK_YEAR, ADDRESS, EVALUATION, BIRTHDAY)
+        VALUES (#{userId}, #{identityNum}, #{name}, #{sex}, #{nation},
+                #{marriage}, #{workYear}, #{address}, #{evaluation}, #{birthday})
+    </insert>
+
+    <update id="updateResumeById" parameterType="com.findjob.pojo.Resume">
+        UPDATE resume SET IDENTITY_NUM = #{identityNum}, NAME = #{name}, SEX = #{sex}, NATION = #{nation},
+                          MARRIAGE = #{marriage}, WORK_YEAR = #{workYear}, ADDRESS = #{address},
+                          EVALUATION = #{evaluation}, BIRTHDAY = #{birthday}
+        WHERE id = #{id}
+    </update>
+
+    <update id="updateEvaluation">
+        UPDATE resume SET evaluation = #{evaluation} WHERE id = #{resumeId}
+    </update>
+
+    <insert id="insertJobResume">
+        INSERT INTO job_resume(job_id, resume_id) VALUES (#{jobId}, #{resumeId})
+    </insert>
+
+    <select id="isDupJobResume" resultType="int">
+        SELECT COUNT(*) FROM job_resume WHERE job_id = #{jobId} AND resume_id = #{resumeId}
+    </select>
+
+    <delete id="deleteJobResume">
+        DELETE FROM job_resume WHERE id = #{id}
+    </delete>
+
+    <update id="updateStep" parameterType="com.findjob.pojo.JobResume">
+        UPDATE job_resume SET step = #{step} WHERE id = #{id}
+    </update>
+</mapper>

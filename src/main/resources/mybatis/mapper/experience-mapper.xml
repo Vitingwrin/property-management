@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.findjob.mapper.ExperienceMapper">
+
+    <resultMap id="experienceResultMap" type="Experience">
+        <id property="id" column="id" />
+        <result property="timeStamp" column="time_stamp" />
+        <result property="resumeId" column="resume_id" />
+        <result property="rowNum" column="row_num" />
+        <result property="beginDate" column="begin_date" />
+        <result property="endDate" column="end_date" />
+        <result property="company" column="company" />
+        <result property="post" column="post" />
+        <result property="description" column="description" />
+        <result property="type" column="type" />
+    </resultMap>
+
+    <delete id="deleteExperiences">
+        DELETE FROM experience WHERE id in
+        <foreach collection="list" item="item" open="("
+                 separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <update id="updateExperience" parameterType="com.findjob.pojo.Experience">
+        UPDATE experience SET begin_date = #{beginDate}, end_date = #{endDate}, description = #{description},
+                             company = #{company}, post = #{post}, type = #{type}
+        WHERE id = #{id}
+    </update>
+
+    <insert id="insertExperience" parameterType="com.findjob.pojo.Experience" useGeneratedKeys="true">
+        INSERT INTO experience(ROWNUM, RESUME_ID, BEGIN_DATE, END_DATE, company, description, post, TYPE)
+        VALUES (#{rowNum}, #{resumeId}, #{beginDate}, #{endDate}, #{company}, #{description}, #{post}, #{type})
+    </insert>
+
+    <select id="getExperience" parameterType="integer" resultMap="experienceResultMap">
+        SELECT * FROM experience WHERE resume_id = #{resumeId}
+    </select>
+
+</mapper>
