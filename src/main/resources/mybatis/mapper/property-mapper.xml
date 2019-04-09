@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.property.mapper.PropertyMapper">
+
+    <resultMap id="propertyResultMap" type="Property">
+        <id property="id" column="id" />
+        <result property="createTime" column="create_time" />
+        <result property="timeStamp" column="time_stamp" />
+        <result property="buildings" column="buildings" />
+        <result property="name" column="name" />
+        <result property="code" column="code" />
+        <result property="status" column="status" />
+        <result property="unit" column="unit" />
+        <result property="doorplate" column="doorplate" />
+        <result property="area" column="area" />
+        <result property="residence" column="residence_id" />
+    </resultMap>
+
+    <insert id="insertProperty" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO property(RESIDENCE_ID, NAME, CODE, BUILDINGS, DOORPLATE, UNIT, AREA, STATUS)
+        VALUES (#{residence}, #{name}, #{code}, #{buildings}, #{doorplate}, #{unit}, #{area}, #{status})
+    </insert>
+
+    <delete id="deleteProperty" parameterType="integer">
+        DELETE FROM property WHERE id = #{id}
+    </delete>
+
+    <update id="updateProperty" parameterType="com.property.pojo.Property">
+        UPDATE property SET name = #{name}, code = #{code}, residence_id = #{residence}, buildings = #{buildings},
+                            doorplate = #{doorplate}, unit = #{unit}, area = #{area}, status = #{status}
+        WHERE id = #{id}
+    </update>
+
+    <select id="getAllProperties" resultMap="propertyResultMap">
+        SELECT property.id, property.name, property.code, BUILDINGS, DOORPLATE, UNIT, AREA, STATUS, property.create_time, property.time_stamp,
+               r.name AS residence_id FROM property
+            LEFT JOIN residence r on property.residence_id = r.id
+        ORDER BY property.time_stamp DESC
+    </select>
+
+    <select id="getAllUnsoldProperties" resultMap="propertyResultMap">
+        SELECT property.id, property.name, property.code, BUILDINGS, DOORPLATE, UNIT, AREA, STATUS, property.create_time, property.time_stamp,
+               r.name AS residence_id FROM property
+            LEFT JOIN residence r on property.residence_id = r.id
+        WHERE property.status = '未售'
+        ORDER BY property.time_stamp DESC
+    </select>
+
+    <select id="isExistsCode" resultType="boolean">
+        SELECT COUNT(*) FROM property WHERE code = #{code}
+    </select>
+
+    <update id="checkInProperty" parameterType="integer">
+        UPDATE property SET status = '已售' WHERE id = #{id}
+    </update>
+
+    <update id="checkOutProperty" parameterType="integer">
+        UPDATE property SET status = '未售' WHERE id = #{id}
+    </update>
+
+    <select id="getAllPropertiesByResidenceId" parameterType="integer" resultMap="propertyResultMap">
+        SELECT * FROM property WHERE residence_id = #{id}
+    </select>
+
+</mapper>

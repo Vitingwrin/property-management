@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.property.mapper.ResidenceMapper">
+
+    <resultMap id="residenceResultMap" type="Residence">
+        <id property="id" column="id" />
+        <result property="createTime" column="create_time" />
+        <result property="timeStamp" column="time_stamp" />
+        <result property="name" column="name" />
+        <result property="code" column="code" />
+        <result property="buildingsNum" column="buildings_num" />
+    </resultMap>
+
+    <insert id="insertResidence" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO residence(CODE, NAME, BUILDINGS_NUM)
+        VALUES (#{code}, #{name}, #{buildingsNum})
+    </insert>
+
+    <delete id="deleteResidence" parameterType="integer">
+        DELETE FROM residence WHERE id = #{id}
+    </delete>
+
+    <update id="updateResidence" parameterType="com.property.pojo.Residence">
+        UPDATE residence SET code = #{code}, name = #{name}, buildings_num = #{buildingsNum}
+        WHERE id = #{id}
+    </update>
+
+    <select id="getAllResidences" resultMap="residenceResultMap">
+        SELECT * FROM residence ORDER BY time_stamp DESC
+    </select>
+
+    <select id="isExistsCode" resultType="boolean">
+        SELECT COUNT(*) FROM residence WHERE code = #{code}
+    </select>
+
+    <select id="getResidenceByName" resultMap="residenceResultMap">
+        SELECT * FROM residence WHERE name = #{name}
+    </select>
+
+    <select id="getResidenceById" resultMap="residenceResultMap">
+        SELECT * FROM residence WHERE id = #{id}
+    </select>
+
+    <select id="getAllCheckedResidences" resultMap="residenceResultMap">
+        SELECT residence.* FROM residence
+            JOIN property p on residence.id = p.residence_id
+            JOIN resident r on p.id = r.property_id
+    </select>
+</mapper>

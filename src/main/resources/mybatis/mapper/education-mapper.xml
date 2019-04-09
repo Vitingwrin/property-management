@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.findjob.mapper.EducationMapper">
+<mapper namespace="com.property.mapper.EducationMapper">
 
     <resultMap id="educationResultMap" type="Education">
         <id property="id" column="id" />
@@ -25,13 +25,13 @@
         </foreach>
     </delete>
 
-    <update id="updateEducation" parameterType="com.findjob.pojo.Education">
+    <update id="updateEducation" parameterType="com.property.pojo.Education">
         UPDATE education SET begin_date = #{beginDate}, end_date = #{endDate}, major = #{major},
                              school = #{school}, edu = #{edu}, type = #{type}
         WHERE id = #{id}
     </update>
 
-    <insert id="insertEducation" parameterType="com.findjob.pojo.Education" useGeneratedKeys="true">
+    <insert id="insertEducation" parameterType="com.property.pojo.Education" useGeneratedKeys="true">
         INSERT INTO education(ROWNUM, RESUME_ID, BEGIN_DATE, END_DATE, SCHOOL, MAJOR, EDU, TYPE)
         VALUES (#{rowNum}, #{resumeId}, #{beginDate}, #{endDate}, #{school}, #{major}, #{edu}, #{type})
     </insert>

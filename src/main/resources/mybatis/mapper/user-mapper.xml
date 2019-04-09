@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.findjob.mapper.UserMapper">
+<mapper namespace="com.property.mapper.UserMapper">
 
     <resultMap id="userResultMap" type="User">
         <id property="id" column="id" />
@@ -11,9 +11,9 @@
         <result property="username" column="username" />
         <result property="password" column="password" />
         <result property="enabled" column="is_enabled" />
-        <result property="email" column="email" />
+        <result property="phone" column="phone" />
         <result property="createTime" column="create_time" />
-        <collection property="roles" ofType="com.findjob.pojo.Role">
+        <collection property="roles" ofType="com.property.pojo.Role">
             <id property="id" column="role_id" />
             <result property="name" column="role_name" />
             <result property="nameZh" column="name_zh" />
@@ -21,51 +21,65 @@
     </resultMap>
 
     <insert id="insertUserRole">
-        INSERT INTO job.user_role (user_id, role_id) VALUES (#{userId}, #{roleId})
+        INSERT INTO user_role (user_id, role_id) VALUES (#{userId}, #{roleId})
     </insert>
 
     <select id="loadUserByUsername" resultMap="userResultMap">
-        SELECT job.user.*, job.role.id AS `role_id`, job.role.name AS role_name, job.role.name_zh
-        FROM job.user LEFT JOIN job.user_role ON job.user.id = job.user_role.user_id
-                    LEFT JOIN job.role ON job.role.`id` = job.user_role.`role_id`
+        SELECT user.*, role.id AS `role_id`, role.name AS role_name, role.name_zh
+        FROM user LEFT JOIN user_role ON user.id = user_role.user_id
+                    LEFT JOIN role ON role.`id` = user_role.`role_id`
         WHERE `username` = #{username}
     </select>
     
     <select id="isUsernameExists" resultType="boolean">
-        SELECT COUNT(*) FROM job.user WHERE `username` = #{username}
+        SELECT COUNT(*) FROM user WHERE `username` = #{username}
     </select>
 
-    <insert id="insertUser" parameterType="com.findjob.pojo.User" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO job.user(name, username, password, email) VALUES (#{name}, #{username}, #{password}, #{email})
+    <insert id="insertUser" parameterType="com.property.pojo.User" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO user(name, username, password, phone) VALUES (#{name}, #{username}, #{password}, #{phone})
     </insert>
 
     <update id="updatePwd" statementType="PREPARED">
-        UPDATE job.user SET password = #{newPwd} WHERE username = #{username}
+        UPDATE user SET password = #{newPwd} WHERE username = #{username}
     </update>
 
     <select id="getUserIdByUsername" parameterType="string" resultType="integer">
-        SELECT id FROM job.user WHERE username = #{username}
+        SELECT id FROM user WHERE username = #{username}
     </select>
 
     <select id="getAdminsByPaging" parameterType="integer" resultMap="userResultMap">
-        SELECT user.id, username, user.name, email, user.create_time, is_enabled FROM job.user
-        JOIN job.user_role ON user.id = user_role.user_id
-        JOIN job.role ON user_role.role_id = role.id
+        SELECT user.id, username, user.name, phone, user.create_time, is_enabled FROM user
+        JOIN user_role ON user.id = user_role.user_id
+        JOIN role ON user_role.role_id = role.id
         WHERE role.name = 'admin' ORDER BY user.id LIMIT #{OFFSET}, 10
     </select>
 
+    <select id="getUsersByPaging" parameterType="integer" resultMap="userResultMap">
+        SELECT user.id, username, user.name, phone, user.create_time, is_enabled FROM user
+          JOIN user_role ON user.id = user_role.user_id
+          JOIN role ON user_role.role_id = role.id
+        WHERE role.name = 'user' ORDER BY user.id LIMIT #{OFFSET}, 10
+    </select>
+
+    <select id="getAllUsers" resultMap="userResultMap">
+        SELECT user.id, username, user.name, phone, user.create_time, is_enabled FROM user
+          JOIN user_role ON user.id = user_role.user_id
+          JOIN role ON user_role.role_id = role.id
+        WHERE role.name = 'user'
+    </select>
+
     <select id="getAdminCount" resultType="integer">
-        SELECT COUNT(*) FROM job.user
-        JOIN job.user_role ON user.id = user_role.user_id
-        JOIN job.role ON user_role.role_id = role.id
+        SELECT COUNT(*) FROM user
+        JOIN user_role ON user.id = user_role.user_id
+        JOIN role ON user_role.role_id = role.id
         WHERE role.name = 'admin'
     </select>
 
     <delete id="deleteUserRole" parameterType="integer">
-        DELETE FROM job.user_role WHERE user_id = #{id}
+        DELETE FROM user_role WHERE user_id = #{id}
     </delete>
 
     <delete id="deleteUser" parameterType="integer">
-        DELETE FROM job.user WHERE id = #{id}
+        DELETE FROM user WHERE id = #{id}
     </delete>
 </mapper>

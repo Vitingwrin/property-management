@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.findjob.mapper.AwardMapper">
+<mapper namespace="com.property.mapper.AwardMapper">
 
     <resultMap id="awardResultMap" type="Award">
         <id property="id" column="id" />
@@ -21,12 +21,12 @@
         </foreach>
     </delete>
 
-    <update id="updateAward" parameterType="com.findjob.pojo.Award">
+    <update id="updateAward" parameterType="com.property.pojo.Award">
         UPDATE award SET date = #{date}, name = #{name}
         WHERE id = #{id}
     </update>
 
-    <insert id="insertAward" parameterType="com.findjob.pojo.Award" useGeneratedKeys="true">
+    <insert id="insertAward" parameterType="com.property.pojo.Award" useGeneratedKeys="true">
         INSERT INTO award(ROWNUM, RESUME_ID, DATE, NAME)
         VALUES (#{rowNum}, #{resumeId}, #{date}, #{name})
     </insert>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.property.mapper.ResidentMapper">
+
+    <resultMap id="residentResultMap" type="Resident">
+        <id property="id" column="id" />
+        <result property="createTime" column="create_time" />
+        <result property="timeStamp" column="time_stamp" />
+        <result property="name" column="name" />
+        <result property="idCard" column="id_card" />
+        <result property="phone" column="phone" />
+        <result property="property" column="property" />
+        <result property="user" column="user" />
+    </resultMap>
+    <insert id="insertResident" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO resident(user_id, property_id, name, id_card, phone)
+        VALUES (#{user}, #{property}, #{name}, #{idCard}, #{phone})
+    </insert>
+
+    <delete id="deleteResident" parameterType="integer">
+        DELETE FROM resident WHERE id = #{id}
+    </delete>
+
+    <update id="updateResident" parameterType="com.property.pojo.Resident">
+        UPDATE resident SET name = #{name}, id_card = #{idCard}, phone = #{phone}
+        WHERE id = #{id}
+    </update>
+
+    <select id="getAllResidents" resultMap="residentResultMap">
+        SELECT * FROM resident ORDER BY time_stamp DESC
+    </select>
+
+    <select id="getResidentByUserName" resultMap="residentResultMap">
+        SELECT * FROM resident WHERE name = #{userName}
+    </select>
+
+    <select id="getResidentByPropertyId" resultMap="residentResultMap">
+        SELECT * FROM resident WHERE property_id = #{id}
+    </select>
+
+    <select id="getResidentById" resultMap="residentResultMap">
+        SELECT * FROM resident WHERE id = #{id}
+    </select>
+</mapper>

@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.findjob.mapper.CompanyMapper">
+<mapper namespace="com.property.mapper.CompanyMapper">
 
     <resultMap id="companyResultMap" type="Company">
         <id property="id" column="id" />
@@ -15,7 +15,7 @@
         <result property="type" column="type" />
     </resultMap>
 
-    <insert id="insertCompany" parameterType="com.findjob.pojo.Company" useGeneratedKeys="true" keyProperty="id">
+    <insert id="insertCompany" parameterType="com.property.pojo.Company" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO company(name, creator, address, email, intro, type)
         VALUES (#{name}, #{creator}, #{address}, #{email}, #{intro}, #{type})
     </insert>
@@ -43,7 +43,7 @@
         FROM company JOIN user ON company.creator = user.id ORDER BY company.id LIMIT #{offset}, 10
     </select>
 
-    <update id="updateCompany" parameterType="com.findjob.pojo.Company">
+    <update id="updateCompany" parameterType="com.property.pojo.Company">
         UPDATE company SET name = #{name}, type = #{type}, email = #{email},
                         intro = #{intro}, address = #{address}
         WHERE id = #{id}

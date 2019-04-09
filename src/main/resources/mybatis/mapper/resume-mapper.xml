@@ -2,7 +2,7 @@
         <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.findjob.mapper.ResumeMapper">
+<mapper namespace="com.property.mapper.ResumeMapper">
 
     <resultMap id="baseInfoResultMap" type="Resume">
     <id property="id" column="id" />
@@ -32,7 +32,7 @@
         <result property="address" column="address" />
         <result property="evaluation" column="evaluation" />
         <result property="birthday" column="birthday" />
-        <collection property="educations" ofType="com.findjob.pojo.Education">
+        <collection property="educations" ofType="com.property.pojo.Education">
             <id property="id" column="edId" />
             <result property="timeStamp" column="edTs" />
             <result property="resumeId" column="edResume_id" />
@@ -44,7 +44,7 @@
             <result property="edu" column="edu" />
             <result property="type" column="edType" />
         </collection>
-        <collection property="experiences" ofType="com.findjob.pojo.Experience">
+        <collection property="experiences" ofType="com.property.pojo.Experience">
             <id property="id" column="exId" />
             <result property="timeStamp" column="ExTs" />
             <result property="resumeId" column="exResume_id" />
@@ -56,7 +56,7 @@
             <result property="description" column="description" />
             <result property="type" column="exType" />
         </collection>
-        <collection property="awards" ofType="com.findjob.pojo.Award">
+        <collection property="awards" ofType="com.property.pojo.Award">
             <id property="id" column="aId" />
             <result property="timeStamp" column="aTs" />
             <result property="resumeId" column="aResume_id" />
@@ -98,14 +98,14 @@
         SELECT * FROM resume WHERE user_id = #{userId}
     </select>
 
-    <insert id="insertResume" useGeneratedKeys="true" parameterType="com.findjob.pojo.Resume" keyProperty="id">
+    <insert id="insertResume" useGeneratedKeys="true" parameterType="com.property.pojo.Resume" keyProperty="id">
         INSERT INTO resume(USER_ID, IDENTITY_NUM, NAME, SEX, NATION,
                            MARRIAGE, WORK_YEAR, ADDRESS, EVALUATION, BIRTHDAY)
         VALUES (#{userId}, #{identityNum}, #{name}, #{sex}, #{nation},
                 #{marriage}, #{workYear}, #{address}, #{evaluation}, #{birthday})
     </insert>
 
-    <update id="updateResumeById" parameterType="com.findjob.pojo.Resume">
+    <update id="updateResumeById" parameterType="com.property.pojo.Resume">
         UPDATE resume SET IDENTITY_NUM = #{identityNum}, NAME = #{name}, SEX = #{sex}, NATION = #{nation},
                           MARRIAGE = #{marriage}, WORK_YEAR = #{workYear}, ADDRESS = #{address},
                           EVALUATION = #{evaluation}, BIRTHDAY = #{birthday}
@@ -128,7 +128,7 @@
         DELETE FROM job_resume WHERE id = #{id}
     </delete>
 
-    <update id="updateStep" parameterType="com.findjob.pojo.JobResume">
+    <update id="updateStep" parameterType="com.property.pojo.JobResume">
         UPDATE job_resume SET step = #{step} WHERE id = #{id}
     </update>
 </mapper>

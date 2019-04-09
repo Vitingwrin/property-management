@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.findjob.mapper.JobMapper">
+<mapper namespace="com.property.mapper.JobMapper">
 
     <resultMap id="jobResultMap" type="Job">
         <id property="id" column="id" />
@@ -21,7 +21,7 @@
         <result property="intro" column="intro" />
     </resultMap>
 
-    <insert id="insertJob" parameterType="com.findjob.pojo.Job" useGeneratedKeys="true" keyProperty="id">
+    <insert id="insertJob" parameterType="com.property.pojo.Job" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO job (creator, name, work_year, sex, require_count, age1, age2, education, place, company_id, intro)
         VALUES (#{creator}, #{name}, #{workYear}, #{sex}, #{requireCount}, #{age1},
                 #{age2}, #{education}, #{place}, #{company}, #{intro})
@@ -44,7 +44,7 @@
         FROM job JOIN user ON job.creator = user.id JOIN company c on job.company_id = c.id
     </select>
 
-    <update id="updateJob" parameterType="com.findjob.pojo.Job">
+    <update id="updateJob" parameterType="com.property.pojo.Job">
         UPDATE job SET name = #{name}, work_year = #{workYear}, sex = #{sex}, require_count = #{requireCount},
                        age1 = #{age1}, age2 = #{age2}, education = #{education}, place = #{place},
                        company_id = #{company}, intro = #{intro}
@@ -71,7 +71,7 @@
         </if>
     </select>
 
-    <select id="findJobResumeByUserId" resultType="com.findjob.pojo.JobResume">
+    <select id="findJobResumeByUserId" resultType="com.property.pojo.JobResume">
         SELECT job_resume.id, j.name AS job, resume_id AS resume, c.name AS company, r.name AS realName,
                job_resume.create_time AS createTime, step, job_resume.time_stamp AS timeStamp
         FROM job_resume
@@ -81,7 +81,7 @@
         WHERE job_resume.resume_id = (SELECT id FROM resume WHERE user_id = #{userId})
     </select>
 
-    <select id="getAllJobResumes" resultType="com.findjob.pojo.JobResume">
+    <select id="getAllJobResumes" resultType="com.property.pojo.JobResume">
         SELECT job_resume.id, j.name AS job, resume_id AS resume, c.name AS company, r.name AS realName,
                job_resume.create_time AS createTime, step, job_resume.time_stamp AS timeStamp
         FROM job_resume

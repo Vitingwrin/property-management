@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.findjob.mapper.NewsMapper">
+<mapper namespace="com.property.mapper.NewsMapper">
 
     <resultMap id="newsResultMap" type="News">
         <id property="id" column="id" />
@@ -19,7 +19,7 @@
         <result property="status" column="status" />
     </resultMap>
 
-    <insert id="insertNews" parameterType="com.findjob.pojo.News" useGeneratedKeys="true" keyProperty="id">
+    <insert id="insertNews" parameterType="com.property.pojo.News" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO `news`(`title`, `summary`, `html`, `markdown`, `author`, `status`, `poster_url`)
                 VALUES(#{title}, #{summary}, #{html}, #{markdown}, #{author}, #{status}, #{posterUrl})
     </insert>
@@ -59,7 +59,7 @@
         </if>
     </select>
 
-    <update id="updateNews" parameterType="com.findjob.pojo.News">
+    <update id="updateNews" parameterType="com.property.pojo.News">
         UPDATE news SET title = #{title}, summary = #{summary}, html = #{html},
                markdown = #{markdown}, author = #{author}, news.poster_url = #{posterUrl}
         WHERE id = #{id}
