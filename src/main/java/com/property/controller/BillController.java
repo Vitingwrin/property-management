@@ -5,9 +5,7 @@ import com.property.pojo.Bill;
 import com.property.pojo.Property;
 import com.property.service.BillService;
 import com.property.service.PropertyService;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,4 +41,29 @@ public class BillController {
         return Result.success("发起缴费成功");
     }
 
+    @GetMapping("/getAllBills")
+    public Result getAllBills() {
+        return Result.success().add("bills", billService.getAllBills());
+    }
+
+    @GetMapping("/getBillDetails")
+    public Result getBillDetails(String name) {
+        return Result.success().add("details", billService.getBillDetailByName(name));
+    }
+
+    @GetMapping("/getBacklogByPropertyId")
+    public Result getBacklogByPropertyId(Integer propertyId) {
+        return Result.success().add("backlog", billService.getBillsByPropertyId(propertyId));
+    }
+
+    @GetMapping("/getPaidBillsByPropertyId")
+    public Result getPaidBillsByPropertyId(Integer propertyId) {
+        return Result.success().add("paidBills", billService.getPaidBillsByPropertyId(propertyId));
+    }
+
+    @PostMapping("/pay")
+    public Result pay(@RequestBody Bill bill) {
+        billService.payBill(bill);
+        return Result.success("缴费成功").add("bill", billService.getBillById(bill.getId()));
+    }
 }

@@ -16,4 +16,5 @@ public interface PropertyMapper {
     boolean isExistsCode(String code);
     int checkInProperty(Integer id);
     int checkOutProperty(Integer id);
+    Property getPropertyByUserId(Integer userId);
 }

@@ -69,4 +69,8 @@ public class PropertyController {
         return propertyService.checkCodeUnique(code) ? Result.success() : Result.error("编号已存在");
     }
 
+    @GetMapping("/getPropertyByUserId")
+    public Result getPropertyByUserId(Integer userId) {
+        return Result.success().add("property", propertyService.getPropertyByUserId(userId));
+    }
 }

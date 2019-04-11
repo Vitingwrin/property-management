@@ -12,6 +12,15 @@
         <result property="fee" column="fee" />
         <result property="payTime" column="pay_time" />
         <result property="property" column="property_id" />
+        <result property="residence" column="residence" />
+    </resultMap>
+    
+    <resultMap id="detailResultMap" type="BillDetail">
+        <result property="property" column="property" />
+        <result property="resident" column="resident" />
+        <result property="payTime" column="pay_time" />
+        <result property="status" column="status" />
+        <result property="phone" column="phone" />
     </resultMap>
 
     <insert id="insertBills" useGeneratedKeys="true" keyProperty="id">
@@ -20,5 +29,50 @@
             (#{item.property}, #{item.name}, #{item.fee})
         </foreach>
     </insert>
+
+    <select id="getAllBills" resultMap="billResultMap">
+        SELECT DISTINCT bill.id, bill.name, fee, bill.create_time, r.name AS residence, bill.time_stamp FROM bill
+        JOIN property p on bill.property_id = p.id
+        JOIN residence r on p.residence_id = r.id
+        ORDER BY bill.time_stamp DESC
+    </select>
+
+    <select id="getBillDetailByName" resultMap="detailResultMap">
+        SELECT p.name AS property, r.name AS resident, r.phone,
+         pay_time, IF(pay_time IS NULL, '未缴费', '已缴费') AS status  FROM bill
+            JOIN property p on bill.property_id = p.id
+            JOIN resident r on p.id = r.property_id
+            JOIN residence r2 on p.residence_id = r2.id
+        WHERE r2.name = #{name}
+        ORDER BY bill.time_stamp DESC
+    </select>
+    
+    <select id="getBillsByPropertyId" resultMap="billResultMap">
+        SELECT bill.id,  bill.name, fee, bill.create_time, r.name AS resident, bill.pay_time,
+               bill.time_stamp, p.name AS property_id FROM bill
+              JOIN property p on bill.property_id = p.id
+              JOIN residence r on p.residence_id = r.id
+        WHERE property_id = #{id} AND pay_time IS NULL
+        ORDER BY create_time DESC
+    </select>
+
+    <select id="getPaidBillsByPropertyId" resultMap="billResultMap">
+        SELECT bill.id,  bill.name, fee, bill.create_time, r.name AS resident, bill.pay_time,
+               bill.time_stamp, p.name AS property_id FROM bill
+               JOIN property p on bill.property_id = p.id
+               JOIN residence r on p.residence_id = r.id
+        WHERE property_id = #{id} AND pay_time IS NOT NULL
+        ORDER BY create_time DESC
+    </select>
+
+    <update id="payBill" parameterType="com.property.pojo.Bill">
+        UPDATE bill SET pay_time = CURRENT_TIMESTAMP WHERE id = #{id}
+    </update>
+
+    <select id="getBillById" resultMap="billResultMap">
+        SELECT bill.id, bill.name, fee, pay_time, bill.create_time, bill.time_stamp, p.name AS property_id FROM bill
+            JOIN property p on bill.property_id = p.id
+            WHERE bill.id = #{id}
+    </select>
 
 </mapper>

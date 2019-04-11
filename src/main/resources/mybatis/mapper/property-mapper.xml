@@ -64,4 +64,10 @@
         SELECT * FROM property WHERE residence_id = #{id}
     </select>
 
+    <select id="getPropertyByUserId" resultMap="propertyResultMap">
+        SELECT property.id, property.name, property.code, BUILDINGS, DOORPLATE, UNIT, AREA, STATUS, property.create_time, property.time_stamp,
+               r.name AS residence_id FROM property
+        LEFT JOIN residence r on property.residence_id = r.id WHERE property.id = (SELECT property_id FROM resident WHERE user_id = #{userId})
+    </select>
+
 </mapper>

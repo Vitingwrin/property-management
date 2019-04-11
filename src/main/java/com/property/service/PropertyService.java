@@ -56,4 +56,8 @@ public class PropertyService {
     public int checkOutProperty(Integer id) {
         return propertyMapper.checkOutProperty(id);
     }
+
+    public Property getPropertyByUserId(Integer userId) {
+        return propertyMapper.getPropertyByUserId(userId);
+    }
 }

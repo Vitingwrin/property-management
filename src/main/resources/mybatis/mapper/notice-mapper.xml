@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.property.mapper.NoticeMapper">
+
+    <resultMap id="noticeResultMapLazy" type="Notice">
+        <id property="id" column="id" />
+        <result property="createTime" column="create_time" />
+        <result property="timeStamp" column="time_stamp" />
+        <result property="title" column="title" />
+        <result property="content" column="content" />
+        <result property="creator" column="creator" />
+    </resultMap>
+
+    <resultMap id="noticeResultMap" type="Notice">
+        <id property="id" column="id" />
+        <result property="createTime" column="create_time" />
+        <result property="timeStamp" column="time_stamp" />
+        <result property="title" column="title" />
+        <result property="content" column="content" />
+        <result property="creator" column="creator" />
+        <collection property="messages">
+            <id property="id" column="m_id" />
+            <result property="createTime" column="m_create_time" />
+            <result property="timeStamp" column="m_time_stamp" />
+            <result property="messageId" column="m_id" />
+            <result property="content" column="m_content" />
+            <result property="creator" column="m_creator" />
+        </collection>
+    </resultMap>
+
+    <insert id="insertNotice" useGeneratedKeys="true" keyProperty="id" parameterType="com.property.pojo.Notice">
+        INSERT INTO notice(creator, TITLE, CONTENT)
+        VALUES (#{creator}, #{title}, #{content})
+    </insert>
+
+    <update id="updateNotice" parameterType="com.property.pojo.Notice">
+        UPDATE notice SET title = #{title}, content = #{content}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteNotice" parameterType="integer">
+        DELETE FROM notice WHERE id = #{id}
+    </delete>
+
+    <select id="getAllNotices" resultMap="noticeResultMapLazy">
+        SELECT notice.ID, notice.CREATE_TIME, notice.TIME_STAMP, u.name AS creator, TITLE, CONTENT FROM notice
+            JOIN user u on notice.creator = u.id
+        ORDER BY notice.create_time DESC
+    </select>
+
+    <select id="getNoticesWithMsg" resultMap="noticeResultMap">
+        SELECT notice.ID, notice.CREATE_TIME, notice.TIME_STAMP, u.name AS creator, TITLE, notice.CONTENT,
+               m.id AS m_id, m.creator AS m_creator, m.create_time AS m_create_time,
+               m.time_stamp AS m_time_stamp, m.content AS m_content
+        FROM notice
+            JOIN user u on notice.creator = u.id
+            LEFT JOIN (SELECT message.id, message.create_time, message.time_stamp, user.name as creator,
+                              message.notice_id, message.content FROM message JOIN user ON message.creator = user.id) m
+        ON notice_id = notice.id
+        ORDER BY notice.create_time DESC
+    </select>
+
+    <select id="isExistsTitle" parameterType="string" resultType="boolean">
+        SELECT COUNT(*) FROM notice WHERE title = #{title}
+    </select>
+</mapper>

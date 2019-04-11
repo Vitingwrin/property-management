@@ -6,15 +6,13 @@ import lombok.ToString;
 
 /**
  * @author Chichiu Yeung
- * Created in 2019/4/9 23:24
+ * Created in 2019/4/11 10:07
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
-public class Bill extends Entity {
-    private String name;
-    private String fee;
-    private String property;
-    private String payTime;
-    private String residence;
+public class Message extends Entity {
+    private String creator;
+    private Integer noticeId;
+    private String content;
 }

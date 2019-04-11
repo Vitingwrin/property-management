@@ -4,17 +4,18 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
+import java.util.List;
+
 /**
  * @author Chichiu Yeung
- * Created in 2019/4/9 23:24
+ * Created in 2019/4/11 9:44
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
-public class Bill extends Entity {
-    private String name;
-    private String fee;
-    private String property;
-    private String payTime;
-    private String residence;
+public class Notice extends Entity {
+    private String title;
+    private String content;
+    private String creator;
+    List<Message> messages;
 }
