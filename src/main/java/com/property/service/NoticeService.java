@@ -1,6 +1,7 @@
 package com.property.service;
 
 import com.property.mapper.NoticeMapper;
+import com.property.pojo.Message;
 import com.property.pojo.Notice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -38,5 +39,13 @@ public class NoticeService {
     }
     public List<Notice> getNoticesWithMsg() {
         return noticeMapper.getNoticesWithMsg();
+    }
+
+    public int insertMessage(Message message) {
+        return noticeMapper.insertMessage(message);
+    }
+
+    public Notice getNoticeWithMsgById(Integer noticeId) {
+        return noticeMapper.getNoticeWithMsgById(noticeId);
     }
 }

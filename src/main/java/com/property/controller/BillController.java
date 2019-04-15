@@ -3,8 +3,10 @@ package com.property.controller;
 import com.property.controller.result.Result;
 import com.property.pojo.Bill;
 import com.property.pojo.Property;
+import com.property.pojo.Repair;
 import com.property.service.BillService;
 import com.property.service.PropertyService;
+import com.property.service.RepairService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -20,10 +22,12 @@ public class BillController {
 
     private final PropertyService propertyService;
     private final BillService billService;
+    private final RepairService repairService;
 
-    public BillController(PropertyService propertyService, BillService billService) {
+    public BillController(PropertyService propertyService, BillService billService, RepairService repairService) {
         this.propertyService = propertyService;
         this.billService = billService;
+        this.repairService = repairService;
     }
 
     @PostMapping("/initiate")
@@ -64,6 +68,12 @@ public class BillController {
     @PostMapping("/pay")
     public Result pay(@RequestBody Bill bill) {
         billService.payBill(bill);
+        // 保修单需要更新状态
+        if (bill.getType() == 2) {
+            Repair repair = repairService.getRepairById(bill.getRepairId());
+            repair.setStatus(2);
+            repairService.updateRepair(repair);
+        }
         return Result.success("缴费成功").add("bill", billService.getBillById(bill.getId()));
     }
 }

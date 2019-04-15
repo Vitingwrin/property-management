@@ -20,11 +20,10 @@
         <result property="title" column="title" />
         <result property="content" column="content" />
         <result property="creator" column="creator" />
-        <collection property="messages">
+        <collection property="messages" ofType="com.property.pojo.Message">
             <id property="id" column="m_id" />
             <result property="createTime" column="m_create_time" />
             <result property="timeStamp" column="m_time_stamp" />
-            <result property="messageId" column="m_id" />
             <result property="content" column="m_content" />
             <result property="creator" column="m_creator" />
         </collection>
@@ -51,7 +50,7 @@
     </select>
 
     <select id="getNoticesWithMsg" resultMap="noticeResultMap">
-        SELECT notice.ID, notice.CREATE_TIME, notice.TIME_STAMP, u.name AS creator, TITLE, notice.CONTENT,
+        SELECT notice.id, notice.create_time, notice.time_stamp, u.name AS creator, title, notice.content,
                m.id AS m_id, m.creator AS m_creator, m.create_time AS m_create_time,
                m.time_stamp AS m_time_stamp, m.content AS m_content
         FROM notice
@@ -64,5 +63,23 @@
 
     <select id="isExistsTitle" parameterType="string" resultType="boolean">
         SELECT COUNT(*) FROM notice WHERE title = #{title}
+    </select>
+
+    <insert id="insertMessage" parameterType="com.property.pojo.Message" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO message(CREATOR, NOTICE_ID, CONTENT)
+        VALUES (#{creator}, #{noticeId}, #{content})
+    </insert>
+
+    <select id="getNoticeWithMsgById" resultMap="noticeResultMap">
+        SELECT notice.id, notice.create_time, notice.time_stamp, u.name AS creator, title, notice.content,
+               m.id AS m_id, m.creator AS m_creator, m.create_time AS m_create_time,
+               m.time_stamp AS m_time_stamp, m.content AS m_content
+        FROM notice
+                 JOIN user u on notice.creator = u.id
+                 LEFT JOIN (SELECT message.id, message.create_time, message.time_stamp, user.name as creator,
+                                   message.notice_id, message.content FROM message JOIN user ON message.creator = user.id) m
+                           ON notice_id = notice.id
+        WHERE notice.id = #{noticeId}
+        ORDER BY notice.create_time DESC
     </select>
 </mapper>

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.property.mapper.RepairMapper">
+
+    <resultMap id="repairResultMap" type="Repair">
+        <id property="id" column="id" />
+        <result property="createTime" column="create_time" />
+        <result property="timeStamp" column="time_stamp" />
+        <result property="type" column="type" />
+        <result property="phone" column="phone" />
+        <result property="expectTime" column="expect_time" />
+        <result property="fee" column="fee" />
+        <result property="comment" column="comment" />
+        <result property="status" column="status" />
+        <result property="code" column="code" />
+    </resultMap>
+
+    <insert id="insertRepair" useGeneratedKeys="true" keyProperty="id" parameterType="com.property.pojo.Repair">
+        INSERT INTO repair(creator, type, phone, expect_time, status, code)
+        VALUES (#{creator}, #{type}, #{phone}, #{expectTime}, #{status}, #{code})
+    </insert>
+
+    <update id="updateRepair" parameterType="com.property.pojo.Repair">
+        UPDATE repair SET type = #{type}, phone = #{phone}, status = #{status},
+                             fee = #{fee}, comment = #{comment}, status = #{status}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteRepair" parameterType="integer">
+        DELETE FROM repair WHERE id = #{id}
+    </delete>
+
+    <select id="getRepairsByUserId" resultMap="repairResultMap">
+        SELECT repair.ID, repair.CREATE_TIME, repair.TIME_STAMP, u.name AS creator,
+               code, type, repair.phone, fee, status, expect_time, comment
+        FROM repair JOIN user u on repair.creator = u.id
+        WHERE creator = #{userId}
+        ORDER BY repair.create_time DESC
+    </select>
+
+    <select id="getAllRepairs" resultMap="repairResultMap">
+        SELECT repair.ID, repair.CREATE_TIME, repair.TIME_STAMP, u.name AS creator,
+               code, type, repair.phone, fee, status, expect_time, comment
+        FROM repair JOIN user u on repair.creator = u.id
+        ORDER BY repair.create_time DESC
+    </select>
+
+    <select id="getRepairById" resultMap="repairResultMap">
+        SELECT * FROM repair WHERE id = #{id}
+    </select>
+</mapper>

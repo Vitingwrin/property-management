@@ -17,4 +17,5 @@ public interface PropertyMapper {
     int checkInProperty(Integer id);
     int checkOutProperty(Integer id);
     Property getPropertyByUserId(Integer userId);
+    Property getPropertyByRepairId(Integer repairId);
 }

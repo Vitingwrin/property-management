@@ -50,4 +50,8 @@ public class BillService {
     public Bill getBillById(Integer id) {
         return billMapper.getBillById(id);
     }
+
+    public int insertRepairBill(Bill bill) {
+        return billMapper.insertRepairBill(bill);
+    }
 }

@@ -60,4 +60,8 @@ public class PropertyService {
     public Property getPropertyByUserId(Integer userId) {
         return propertyMapper.getPropertyByUserId(userId);
     }
+
+    public Property getPropertyByRepairId(Integer repairId) {
+        return propertyMapper.getPropertyByRepairId(repairId);
+    }
 }

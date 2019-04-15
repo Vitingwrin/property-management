@@ -17,4 +17,6 @@ public class Bill extends Entity {
     private String property;
     private String payTime;
     private String residence;
+    private Integer type;
+    private Integer repairId;
 }

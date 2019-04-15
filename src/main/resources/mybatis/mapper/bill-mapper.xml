@@ -13,6 +13,8 @@
         <result property="payTime" column="pay_time" />
         <result property="property" column="property_id" />
         <result property="residence" column="residence" />
+        <result property="type" column="type" />
+        <result property="repairId" column="repair_id" />
     </resultMap>
     
     <resultMap id="detailResultMap" type="BillDetail">
@@ -30,15 +32,20 @@
         </foreach>
     </insert>
 
+    <insert id="insertRepairBill" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO bill(PROPERTY_ID, NAME, FEE, type, repair_id) VALUES
+        (#{item.property}, #{item.name}, #{item.fee}, 2, #{repairId})
+    </insert>
+
     <select id="getAllBills" resultMap="billResultMap">
-        SELECT DISTINCT bill.id, bill.name, fee, bill.create_time, r.name AS residence, bill.time_stamp FROM bill
+        SELECT DISTINCT bill.id, bill.name, fee, bill.create_time, r.name AS residence, bill.time_stamp, repair_id, bill.type FROM bill
         JOIN property p on bill.property_id = p.id
         JOIN residence r on p.residence_id = r.id
         ORDER BY bill.time_stamp DESC
     </select>
 
     <select id="getBillDetailByName" resultMap="detailResultMap">
-        SELECT p.name AS property, r.name AS resident, r.phone,
+        SELECT p.name AS property, r.name AS resident, r.phone, repair_id, bill.type
          pay_time, IF(pay_time IS NULL, '未缴费', '已缴费') AS status  FROM bill
             JOIN property p on bill.property_id = p.id
             JOIN resident r on p.id = r.property_id
@@ -48,7 +55,7 @@
     </select>
     
     <select id="getBillsByPropertyId" resultMap="billResultMap">
-        SELECT bill.id,  bill.name, fee, bill.create_time, r.name AS resident, bill.pay_time,
+        SELECT bill.id,  bill.name, fee, bill.create_time, r.name AS resident, bill.pay_time, repair_id, bill.type,
                bill.time_stamp, p.name AS property_id FROM bill
               JOIN property p on bill.property_id = p.id
               JOIN residence r on p.residence_id = r.id

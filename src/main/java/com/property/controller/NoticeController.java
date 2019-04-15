@@ -1,6 +1,7 @@
 package com.property.controller;
 
 import com.property.controller.result.Result;
+import com.property.pojo.Message;
 import com.property.pojo.Notice;
 import com.property.service.MessageService;
 import com.property.service.NoticeService;
@@ -34,7 +35,7 @@ public class NoticeController {
 
     @GetMapping("/getAllNotices")
     public Result getAllNotices() {
-        return Result.success().add("notices", noticeService.getAllNotices());
+        return Result.success().add("notices", noticeService.getNoticesWithMsg());
     }
 
     @DeleteMapping("/deleteNotice")
@@ -52,5 +53,16 @@ public class NoticeController {
     @GetMapping("/getNoticesWithMsg")
     public Result getNoticeWithMsg() {
         return Result.success().add("notices", noticeService.getNoticesWithMsg());
+    }
+
+    @PostMapping("/comment")
+    public Result comment(@RequestBody Message comment) {
+        noticeService.insertMessage(comment);
+        return Result.success("发表成功");
+    }
+
+    @GetMapping("/getNoticeById")
+    public Result getNoticeById(Integer noticeId) {
+        return Result.success().add("notice", noticeService.getNoticeWithMsgById(noticeId));
     }
 }

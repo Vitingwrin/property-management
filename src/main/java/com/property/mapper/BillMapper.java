@@ -15,4 +15,5 @@ public interface BillMapper {
     List<Bill> getPaidBillsByPropertyId(Integer id);
     int payBill(Bill bill);
     Bill getBillById(Integer id);
+    int insertRepairBill(Bill bill);
 }

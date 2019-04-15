@@ -1,5 +1,6 @@
 package com.property.mapper;
 
+import com.property.pojo.Message;
 import com.property.pojo.Notice;
 import org.springframework.stereotype.Component;
 
@@ -13,4 +14,6 @@ public interface NoticeMapper {
     List<Notice> getAllNotices();
     boolean isExistsTitle(String title);
     List<Notice> getNoticesWithMsg();
+    int insertMessage(Message message);
+    Notice getNoticeWithMsgById(Integer noticeId);
 }
